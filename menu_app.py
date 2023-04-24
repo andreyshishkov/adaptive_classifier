@@ -12,7 +12,7 @@ class MenuWindow(tk.Tk):
         super().__init__()
         self.geometry(f'{width}x{height}')
         self.title('Программа интеллектуальной адаптивной классификации неструктурируемых текстовых данных по степени конфиденциальности')
-        self.image = tk.PhotoImage(file='kvvu.png')
+        self.image = tk.PhotoImage(file='bg.png')
         self._bg = tk.Label(self, image=self.image)
         self._bg.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -38,7 +38,7 @@ class MenuWindow(tk.Tk):
             command=self.create_conf
         )
         train_menu.add_command(
-            label='Импорт конфигурационного файла',
+            label='Импорт конфигурационных параметров',
             command=self.mode_train
         )
         menu.add_cascade(
@@ -134,21 +134,29 @@ class MenuWindow(tk.Tk):
         filename = self.choose_files(filetypes)
         if filename:
             prediction = get_prediction(filename)
-            result_window = self.create_prediction_window(prediction)
-            result_window.geometry('500x200+200+200')
+            if prediction == 1:
+                text = 'Внимание, информация ограниченного доступа !'
+                bg = 'red'
+            else:
+                text = 'Открытая информация'
+                bg = 'green'
+            result_window = self.create_prediction_window(text)
+            result_window.geometry('+300+300')
+            result_window.config(bg=bg)
 
             result_window.focus_set()
             result_window.grab_set()
             result_window.wait_window()
 
-    def create_prediction_window(self, prediction):
+    def create_prediction_window(self, text):
         result_window = tk.Toplevel(self)
 
         label = tk.Label(
             result_window,
-            text=f'Для данного файла предсказанный класс - "{prediction}"'
+            text=text,
+            font='Helvetica 12 bold',
         )
-        label.pack(pady=20)
+        label.pack(pady=10, padx=10)
         return result_window
 
     @staticmethod
