@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.filedialog as fd
 from windows.help_menu import HelpMenu
+from windows.create_conf_file import CreatedConfWindow
 from finetune_model.fine_tune import fine_tune
 from utils.prediction import get_prediction
 
@@ -33,11 +34,15 @@ class MenuWindow(tk.Tk):
     def create_train_menu(self, menu):
         train_menu = tk.Menu(menu, tearoff=0)
         train_menu.add_command(
-            label='Выбрать конфигурационный файл',
+            label='Создать конфигурационный файл',
+            command=self.create_conf
+        )
+        train_menu.add_command(
+            label='Импорт конфигурационного файла',
             command=self.mode_train
         )
         menu.add_cascade(
-            label='Обучение',
+            label='Файл',
             menu=train_menu
         )
 
@@ -55,6 +60,10 @@ class MenuWindow(tk.Tk):
     def create_helper(self):
         helper = HelpMenu(self)
         helper.grab_focus()
+
+    def create_conf(self):
+        conf_window = CreatedConfWindow(self)
+        conf_window.grab_focus()
 
     def mode_train(self):
         filetypes = (("Текстовый файл", "*.txt"),
@@ -77,9 +86,15 @@ class MenuWindow(tk.Tk):
         train_window.title('Режим обучения')
         start_label = tk.Label(
             train_window,
-            text='Сейчас начнется обучение. Пожалуйста, подождите, это может занять время. \nЧтобы начать обучение закройте текущее окно и дождитесь пока не появится окно с результатом'
+            text='Сейчас начнется обучение. Пожалуйста, подождите, это может занять время.'
         )
         start_label.pack(pady=20)
+        start_button = tk.Button(
+            train_window,
+            text='Начать обучение',
+            command=train_window.destroy
+        )
+        start_button.pack(pady=10)
         return train_window
 
     def create_train_window(self, f1, length, step):
